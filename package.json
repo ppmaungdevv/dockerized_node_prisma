@@ -1,0 +1,16 @@
+{
+  "name": "learn_prisma",
+  "version": "0.0.1",
+  "description": "learning prisma",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "devDependencies": {
+    "nodemon": "~3.0.1",
+    "prisma": "^5.5.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.5.2",
+    "express": "^4.18.2"
+  }
+}
