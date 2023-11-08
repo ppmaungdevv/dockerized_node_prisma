@@ -7,10 +7,10 @@ const prisma = new PrismaClient()
 app.get('/', async (req, res) => {
   try {
     const allUsers = await prisma.user.findMany({
-      // include: {
-      //   posts: true,
+      include: {
+        // posts: true,
       //   profile: true,
-      // },
+      },
     })
     console.log('ok....')
     return res.json(allUsers)
@@ -25,8 +25,7 @@ app.get('/', async (req, res) => {
 app.get('/t', async (req, res) => {
   const allUsers = await prisma.user.create({
     data: {
-      name: 'Alice',
-      email: 'alice@prisma.io',
+      name: 'prisma',
     }
   })
   console.log('ok....')

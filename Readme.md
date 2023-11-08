@@ -17,19 +17,45 @@ docker compose up -d
 
   ```
   GRANT CREATE, ALTER, DROP, REFERENCES ON *.* TO 'prisma_user'@'%';
+  ```
 
+  ```
   FLUSH PRIVILEGES;
   ```
 
-- When using container or service name of mysql docker as a `DATABASE_URL`, do run the `npx prisma migrate dev` inside node conatiner shell
+- When using container or service name of mysql docker as a `DATABASE_URL`, do run the `npx prisma` inside node conatiner shell
 
 ## Prisma CLI commands
 
 ```
 npx prisma migrate dev --name init
+```
 
+```
 npx prisma generate
 ```
+
+Note:
+
+- before creating a new migration file run `npx prisma db pull`
+- to update existing prisma schema file, follow the steps below
+
+  ```
+  npx prisma db pull
+  ```
+
+  then edit the schema file and the run the commnad below
+
+  ```
+  npx prisma migrate dev --create-only --name migration
+  ```
+
+  check whether migration file is correct or not if you want to rename the column without losing data do it right now
+  after that run the commad below
+
+  ```
+  npx prisma migrate dev
+  ```
 
 ## Helpful extension for VSCode
 
