@@ -3,17 +3,15 @@ const router = express.Router();
 const { prisma } = require('../../prisma-client')
 
 router.get('/users', async (req, res) => {
-  try {
-    const all_users = await prisma.user.findMany({
-      include: {
-        // posts: true,
-      },
-    })
-    return res.json(all_users)
-  } catch (error) {
-    console.log(error)
-    return res.json(error)
+  const all_users = await prisma.user.findMany({
+    include: {
+      // posts: true,
+    },
+  })
+  if (all_users.length < 2) {
+    throw new CustomError('Simulated error with custom status code', 400);
   }
+  return res.json(all_users)
 })
 
 router.post('/users', async (req, res) => {
