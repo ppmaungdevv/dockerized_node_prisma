@@ -15,7 +15,9 @@ app.use((err, req, res, next) => {
 
   // Check if the error is an instance of the custom error class
   if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({ error: err.message });
+    const error_msg = err.isJson ? JSON.parse(err.message) : { error: err.message }
+
+    return res.status(err.statusCode).json(error_msg);
   }
 
   // Handle other errors

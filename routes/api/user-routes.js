@@ -1,21 +1,21 @@
 const express = require("express");
+const { validateRequestParam, validateRequestBody } = require('../../validation-middleware');
+const { create_user_schema } = require('../../validation-schemas/user-schemas');
 const router = express.Router();
 const { prisma } = require('../../prisma-client')
 
-router.get('/users', async (req, res) => {
+// get users route
+router.get('/users', validateRequestParam(create_user_schema), async (req, res) => {
   const all_users = await prisma.user.findMany({
     include: {
-      // posts: true,
+      posts: true,
     },
   })
-  if (all_users.length < 2) {
-    throw new CustomError('Simulated error with custom status code', 400);
-  }
   return res.json(all_users)
 })
 
-router.post('/users', async (req, res) => {
-  try {
+// create user route
+router.post('/users', validateRequestBody(create_user_schema), async (req, res) => {
     const { user_id } = req.body
     // const allUsers = await prisma.user.create({
     //   data: {
@@ -23,10 +23,6 @@ router.post('/users', async (req, res) => {
     //   }
     // })
     return res.json(user_id)
-  } catch (error) {
-    console.log(error)
-    return res.json(error)
-  }
 })
 
 module.exports = router;
