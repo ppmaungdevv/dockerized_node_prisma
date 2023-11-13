@@ -5,7 +5,7 @@ const router = express.Router();
 const { prisma } = require('../../prisma-client')
 
 // get users route
-router.get('/users', validateRequestParam(create_user_schema), async (req, res) => {
+router.get('/users', async (req, res) => {
   const all_users = await prisma.user.findMany({
     include: {
       posts: true,

@@ -15,11 +15,11 @@ model User {
 }
 
 model Post {
-  id     Int    @id @default(autoincrement())
+  id     Int     @id @default(autoincrement())
   title  String
-  body   String
+  body   String?
   userId Int?
-  User   User?  @relation(fields: [userId], references: [id])
+  User   User?   @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Post_userId_fkey")
 }
