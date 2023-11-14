@@ -8,7 +8,12 @@ const { prisma } = require('../../prisma-client')
 router.get('/users', async (req, res) => {
   const all_users = await prisma.user.findMany({
     include: {
-      posts: true,
+      posts: {
+        select: {
+          title: true,
+        },
+      },
+      profile: true
     },
   })
   return res.json(all_users)
@@ -16,13 +21,22 @@ router.get('/users', async (req, res) => {
 
 // create user route
 router.post('/users', validateRequestBody(create_user_schema), async (req, res) => {
-    const { user_id } = req.body
+    const { name, email } = req.body
     // const allUsers = await prisma.user.create({
     //   data: {
     //     name: 'prisma',
+    //     profile: {
+    //       create: {
+    //         address: 'user_address',
+    //         birthday: new Date('1990-05-29'), // Example birthday date
+    //       },
+    //     }
+    //   },
+    //   include: {
+    //     profile: true, // Include the profile data in the returned result
     //   }
     // })
-    return res.json(user_id)
+    return res.json({ name, email })
 })
 
 module.exports = router;
