@@ -2,27 +2,27 @@ const express = require('express')
 require('express-async-errors');
 const CustomError = require('./configs/custom-error');
 global.CustomError = CustomError;
-const logger = require('./configs/logger');
+const logger = require('./configs/wintson-logger');
 
 const app = express()
 const port = 3000
 
 app.use(express.json())
 
+// import routes
 require("./routes/routes")(app)
 
+// error handling by listening on uncaughtException event
 process.on("uncaughtException", (ex) => {
-  console.log('agsfafsg')
-  // console.error(ex)
   logger.error(ex.message, ex);
 });
 
+// error handling by listening on unhandledRejection event
 process.on("unhandledRejection", (ex) => {
-  console.log('loooowrt')
-  // console.error(ex)
   logger.error(ex.message, ex);
 });
 
+// import error handler
 app.use(require('./configs/error-handler'))
 
 app.listen(port, () => {

@@ -1,4 +1,7 @@
-const logger = require('./logger');
+/* 
+* for handling API error responses
+*/
+const logger = require('./wintson-logger');
 
 module.exports = (err, req, res, next) => {
   console.error(err.stack);

@@ -1,10 +1,10 @@
+/* 
+* winston log cofing file
+*/
 const winston = require('winston');
 const { format } = require('date-fns');
 
-// Get the current date and time
 const currentDate = new Date();
-
-// Format the current date as desired (for example, ISO 8601 format)
 const formattedDate = format(currentDate, 'yyyy_MM_dd');
 
 const logger = winston.createLogger({
