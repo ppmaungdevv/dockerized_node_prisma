@@ -2,8 +2,8 @@ const express = require("express");
 const { validateRequestParam, validateRequestBody } = require('../../validation-middleware');
 const { create_post_schema } = require('../../validation-schemas/post-schemas');
 const router = express.Router();
-const { prisma } = require('../../prisma-client');
-const CustomError = require("../../custom-error");
+const { prisma } = require('../../configs/prisma-client');
+const CustomError = require("../../configs/custom-error");
 
 router.get('/posts', async (req, res) => {
   try {
