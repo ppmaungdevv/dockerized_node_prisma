@@ -1,8 +1,10 @@
 const express = require('express')
-require('express-async-errors');
-const CustomError = require('./configs/custom-error');
-global.CustomError = CustomError;
-const logger = require('./configs/wintson-logger');
+require('express-async-errors')
+const CustomError = require('./configs/custom-error')
+global.CustomError = CustomError
+const logger = require('./configs/wintson-logger')
+const helpers = require('./helpers')
+global.Helpers = helpers
 
 const app = express()
 const port = 3000

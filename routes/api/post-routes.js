@@ -19,10 +19,29 @@ router.get('/posts', async (req, res) => {
   }
 })
 
+router.get('/search/posts', async (req, res) => {
+  const { title, page, size } = req.query
+  const { take, skip } = Helpers.getPagination(page, size)
+
+  const where = {
+    title: {
+      contains: title // Use 'contains' to perform a case-insensitive partial match
+    },
+  }
+
+  const [ posts, count ] = await prisma.$transaction([
+    prisma.post.findMany({ where, take, skip }),
+    prisma.post.count({ where })
+  ])
+
+  const resp = Helpers.responseWithPagination({ data: posts, total_data_count: count, page, size })
+  return res.json(resp)
+})
+
 router.post('/posts', validateRequestBody(create_post_schema), async (req, res) => {
   const { user_id, title } = req.body
   
-  const user = await prisma.user.findFirst({
+  const user = await prisma.user.findUnique({
     where: {
       id: user_id
     }
