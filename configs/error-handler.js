@@ -1,9 +1,9 @@
 /* 
 * for handling API error responses
 */
-const logger = require('./wintson-logger');
+import { logger } from './wintson-logger.js';
 
-module.exports = (err, req, res, next) => {
+export default (err, req, res, next) => {
   console.error(err.stack);
   
   // Check if the error is an instance of the custom error class

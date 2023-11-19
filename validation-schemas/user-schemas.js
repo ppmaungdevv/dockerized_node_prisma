@@ -1,5 +1,5 @@
-const { Joi, joi_with_unknown } = require('../configs/joi-config');
-const { subYears } = require('date-fns');
+import { Joi, joi_with_unknown } from '../configs/joi-config.js';
+import { subYears } from 'date-fns';
 
 const getMinBirthDate = () => subYears(new Date(), 12);
 
@@ -13,6 +13,6 @@ const create_user_schema = joi_with_unknown.object({
   })
 });
 
-module.exports = {
+export {
   create_user_schema
 }

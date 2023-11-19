@@ -1,18 +1,20 @@
-const express = require('express')
-require('express-async-errors')
-const CustomError = require('./configs/custom-error')
+import express from 'express'
+import('express-async-errors')
+import CustomError from './configs/custom-error.js'
+import { logger } from './configs/wintson-logger.js'
+import * as helpers from './helpers/index.js'
+import { routes } from './routes/routes.js';
+import error_handler from './configs/error-handler.js';
+
 global.CustomError = CustomError
-const logger = require('./configs/wintson-logger')
-const helpers = require('./helpers')
-global.Helpers = helpers
+global.Helpers = helpers;
 
 const app = express()
 const port = 3000
 
 app.use(express.json())
 
-// import routes
-require("./routes/routes")(app)
+routes(app)
 
 // error handling by listening on uncaughtException event
 process.on("uncaughtException", (ex) => {
@@ -25,7 +27,7 @@ process.on("unhandledRejection", (ex) => {
 });
 
 // import error handler
-app.use(require('./configs/error-handler'))
+app.use(error_handler)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

@@ -10,13 +10,16 @@ const validateAndRespond = (res, schema, data) => {
   }
 };
 
-module.exports = {
-  validateRequestParam: (schema) => (req, res, next) => {
-    validateAndRespond(res, schema, req.query);
-    return next();
-  },
-  validateRequestBody: (schema) => (req, res, next) => {
-    validateAndRespond(res, schema, req.body);
-    return next();
-  }
+const validateRequestParam = (schema) => (req, res, next) => {
+  validateAndRespond(res, schema, req.query);
+  return next();
+}
+const validateRequestBody = (schema) => (req, res, next) => {
+  validateAndRespond(res, schema, req.body);
+  return next();
+}
+
+export {
+  validateRequestParam,
+  validateRequestBody
 };

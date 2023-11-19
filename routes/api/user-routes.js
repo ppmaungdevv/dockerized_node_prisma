@@ -1,8 +1,8 @@
-const express = require("express");
-const { validateRequestParam, validateRequestBody } = require('../../validation-middleware');
-const { create_user_schema } = require('../../validation-schemas/user-schemas');
+import express from "express"
+import { validateRequestParam, validateRequestBody } from '../../validation-middleware.js';
+import { create_user_schema } from '../../validation-schemas/user-schemas.js';
+import { prisma } from '../../configs/prisma-client.js';
 const router = express.Router();
-const { prisma } = require('../../configs/prisma-client')
 
 // get users route
 router.get('/users', async (req, res) => {
@@ -40,4 +40,4 @@ router.post('/users', validateRequestBody(create_user_schema), async (req, res) 
     return res.json(allUsers)
 })
 
-module.exports = router;
+export default router;

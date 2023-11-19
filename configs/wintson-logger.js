@@ -1,8 +1,8 @@
 /* 
 * winston log cofing file
 */
-const winston = require('winston');
-const { format } = require('date-fns');
+import winston from 'winston';
+import { format } from 'date-fns';
 
 const currentDate = new Date();
 const formattedDate = format(currentDate, 'yyyy_MM_dd');
@@ -19,4 +19,4 @@ const logger = winston.createLogger({
   ]
 });
 
-module.exports = logger;
+export { logger }

@@ -16,13 +16,14 @@ model User {
 }
 
 model Post {
-  id         Int      @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   title      String
   body       String?
   userId     Int?
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-  User       User?    @relation(fields: [userId], references: [id])
+  created_at DateTime   @default(now())
+  updated_at DateTime   @default(now())
+  User       User?      @relation(fields: [userId], references: [id])
+  categories Category[]
 
   @@index([userId], map: "Post_userId_fkey")
 }
@@ -34,4 +35,10 @@ model Profile {
   birthday DateTime?
   userId   Int       @unique
   user     User      @relation(fields: [userId], references: [id])
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String
+  posts Post[]
 }

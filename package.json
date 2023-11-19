@@ -2,12 +2,13 @@
   "name": "learn_prisma",
   "version": "0.0.1",
   "description": "learning prisma",
+  "type": "module",
   "scripts": {
     "dev": "nodemon index.js"
   },
   "devDependencies": {
     "nodemon": "~3.0.1",
-    "prisma": "^5.5.2"
+    "prisma": "^5.6.0"
   },
   "dependencies": {
     "@prisma/client": "^5.5.2",

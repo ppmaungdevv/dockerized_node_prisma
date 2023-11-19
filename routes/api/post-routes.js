@@ -1,9 +1,8 @@
-const express = require("express");
-const { validateRequestParam, validateRequestBody } = require('../../validation-middleware');
-const { create_post_schema } = require('../../validation-schemas/post-schemas');
+import express from "express"
+import { validateRequestParam, validateRequestBody } from '../../validation-middleware.js';
+import { create_post_schema } from '../../validation-schemas/post-schemas.js';
+import { prisma } from '../../configs/prisma-client.js';
 const router = express.Router();
-const { prisma } = require('../../configs/prisma-client');
-const CustomError = require("../../configs/custom-error");
 
 router.get('/posts', async (req, res) => {
   try {
@@ -39,7 +38,7 @@ router.get('/search/posts', async (req, res) => {
 })
 
 router.post('/posts', validateRequestBody(create_post_schema), async (req, res) => {
-  const { user_id, title } = req.body
+  const { user_id, title, body, categories } = req.body
   
   const user = await prisma.user.findUnique({
     where: {
@@ -62,4 +61,4 @@ router.post('/posts', validateRequestBody(create_post_schema), async (req, res) 
   return res.json(newPost)
 })
 
-module.exports = router;
+export default router;

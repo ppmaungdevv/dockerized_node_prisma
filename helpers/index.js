@@ -13,7 +13,7 @@ const responseWithPagination = ({ data = [], total_data_count = 0, page = 1, siz
   }
 }
 
-module.exports = {
+export {
   getPagination,
   responseWithPagination
 }
