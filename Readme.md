@@ -57,6 +57,24 @@ Note:
   npx prisma migrate dev
   ```
 
+### DB Seeding
+
+- create data file like `category.js`
+- create `seed.js` file inside `prisma` folder
+- add neccessary code to `seed.js`
+- add following to `package.json`
+
+  ```
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
+  ```
+
+- run
+  ```
+  npx prisma db seed
+  ```
+
 ## Helpful extension for VSCode
 
 - Prisma
