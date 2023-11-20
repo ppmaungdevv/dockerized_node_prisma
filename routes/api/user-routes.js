@@ -47,24 +47,48 @@ router.get('/users/:id', parseIdParam, async (req, res) => {
 // get user's post
 router.get('/users/:id/posts', parseIdParam, async (req, res) => {
   const { id } = req.params
-  const user = await prisma.user.findUnique({
+  const user_posts = await prisma.post.findMany({
     where: {
-      id
+      userId: id,
     },
     include: {
+      categories: {
+        select: {
+          name: true
+        }
+      }
+    }
+  })
+  /* 
+  * use this if you want to get posts with user infos 
+  * 
+  *
+  const user_posts_with_user_info = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      name: true,
+      // posts: {} // use empty {} to select all the fields in post
       posts: {
         select: {
           title: true,
-          body: true
-        },
-      },
-      profile: true
-    },
+          body: true,
+          created_at: true,
+          categories: {
+            select: {
+              name: true
+            }
+          },
+        }
+      }
+    }
   })
-  if (!user) {
-    throw new CustomError({ message: "User Not Found", statusCode: 404 })
-  }
-  return res.json(user)
+  *
+  *
+  */
+  return res.json(user_posts)
 })
 
 // create user route
