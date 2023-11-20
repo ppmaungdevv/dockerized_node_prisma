@@ -29,11 +29,8 @@ router.get('/users/:id', parseIdParam, async (req, res) => {
       id
     },
     include: {
-      posts: {
-        select: {
-          title: true,
-          body: true
-        },
+      _count: {
+        select: { posts: true },
       },
       profile: true
     },
