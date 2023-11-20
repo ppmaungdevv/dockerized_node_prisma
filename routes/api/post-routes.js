@@ -1,5 +1,5 @@
 import express from "express"
-import { validateRequestParam, validateRequestBody } from '../../validation-middleware.js';
+import { validateRequestBody } from '../../middlewares/validation.js';
 import { create_post_schema } from '../../validation-schemas/post-schemas.js';
 import { prisma } from '../../configs/prisma-client.js';
 const router = express.Router();

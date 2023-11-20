@@ -1,5 +1,5 @@
 import express from 'express'
-import('express-async-errors')
+import 'express-async-errors'
 import CustomError from './configs/custom-error.js'
 import { logger } from './configs/wintson-logger.js'
 import * as helpers from './helpers/index.js'
@@ -18,12 +18,14 @@ routes(app)
 
 // error handling by listening on uncaughtException event
 process.on("uncaughtException", (ex) => {
+  console.log('unhandledEx')
   logger.error(ex.message, ex);
 });
 
 // error handling by listening on unhandledRejection event
 process.on("unhandledRejection", (ex) => {
-  logger.error(ex.message, ex);
+  console.log('unhandledRejection')
+  logger.error(ex.message, ex)
 });
 
 // import error handler

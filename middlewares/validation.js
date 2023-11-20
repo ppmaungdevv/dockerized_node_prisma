@@ -10,7 +10,7 @@ const validateAndRespond = (res, schema, data) => {
   }
 };
 
-const validateRequestParam = (schema) => (req, res, next) => {
+const validateRequestQueryParam = (schema) => (req, res, next) => {
   validateAndRespond(res, schema, req.query);
   return next();
 }
@@ -20,6 +20,6 @@ const validateRequestBody = (schema) => (req, res, next) => {
 }
 
 export {
-  validateRequestParam,
+  validateRequestQueryParam,
   validateRequestBody
 };

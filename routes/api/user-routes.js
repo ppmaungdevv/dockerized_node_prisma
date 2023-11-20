@@ -1,7 +1,9 @@
 import express from "express"
-import { validateRequestParam, validateRequestBody } from '../../validation-middleware.js';
+import { parseIdParam } from '../../middlewares/parse-id.js';
+import { validateRequestBody } from '../../middlewares/validation.js';
 import { create_user_schema } from '../../validation-schemas/user-schemas.js';
 import { prisma } from '../../configs/prisma-client.js';
+
 const router = express.Router();
 
 // get users route
@@ -17,6 +19,52 @@ router.get('/users', async (req, res) => {
     },
   })
   return res.json(all_users)
+})
+
+// get user detail
+router.get('/users/:id', parseIdParam, async (req, res) => {
+  const { id } = req.params
+  const user = await prisma.user.findUnique({
+    where: {
+      id
+    },
+    include: {
+      posts: {
+        select: {
+          title: true,
+          body: true
+        },
+      },
+      profile: true
+    },
+  })
+  if (!user) {
+    throw new CustomError({ message: "User Not Found", statusCode: 404 })
+  }
+  return res.json(user)
+})
+
+// get user's post
+router.get('/users/:id/posts', parseIdParam, async (req, res) => {
+  const { id } = req.params
+  const user = await prisma.user.findUnique({
+    where: {
+      id
+    },
+    include: {
+      posts: {
+        select: {
+          title: true,
+          body: true
+        },
+      },
+      profile: true
+    },
+  })
+  if (!user) {
+    throw new CustomError({ message: "User Not Found", statusCode: 404 })
+  }
+  return res.json(user)
 })
 
 // create user route

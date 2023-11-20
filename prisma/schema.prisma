@@ -23,7 +23,7 @@ model Post {
   created_at DateTime   @default(now())
   updated_at DateTime   @default(now())
   User       User?      @relation(fields: [userId], references: [id])
-  categories Category[]
+  categories Category[] @relation("CategoryToPost")
 
   @@index([userId], map: "Post_userId_fkey")
 }
@@ -40,5 +40,5 @@ model Profile {
 model Category {
   id    Int    @id @default(autoincrement())
   name  String
-  posts Post[]
+  posts Post[] @relation("CategoryToPost")
 }
