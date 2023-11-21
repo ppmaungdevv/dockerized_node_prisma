@@ -37,6 +37,15 @@ router.get('/search/posts', async (req, res) => {
   return res.json(resp)
 })
 
+// for connentOrCreate catgory
+const getFomattedCategories = async (categories) => {
+  return {
+    connectOrCreate: categories.map(category => {
+      return { where: { name: category }, create: { name: category } }
+    })
+  }
+}
+
 router.post('/posts', validateRequestBody(create_post_schema), async (req, res) => {
   const { user_id, title, body, categories } = req.body
   
@@ -51,11 +60,21 @@ router.post('/posts', validateRequestBody(create_post_schema), async (req, res) 
     throw new CustomError({ message: 'User not found', statusCode: 404});
   }
 
+  const data = {
+    userId: user_id,
+    title,
+    body,
+  }
+  
+  if (categories && categories.length > 0) {
+    data['categories'] = await getFomattedCategories(categories)
+  }
+
   const newPost = await prisma.post.create({
-    data: {
-      title,
-      userId: user_id, // Directly using userId
-    },
+    data,
+    include: {
+      categories: true,
+    }
   });
   
   return res.json(newPost)

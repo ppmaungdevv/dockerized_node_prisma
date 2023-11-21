@@ -75,6 +75,10 @@ Note:
   npx prisma db seed
   ```
 
+## Side Notes
+
+When using `connectOrCreate` in many-to-many relation create, `id` must be provided. If don't want to provide `id` add a unique field. Check it in `create post with connentOrCreate catgory` commit, category name is altered as a unique field. Note that the `connectOrCreate` can be done manually.
+
 ## Helpful extension for VSCode
 
 - Prisma

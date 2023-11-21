@@ -90,23 +90,23 @@ router.get('/users/:id/posts', parseIdParam, async (req, res) => {
 
 // create user route
 router.post('/users', validateRequestBody(create_user_schema), async (req, res) => {
-    const { name, email, birthday, address } = req.body
-    const allUsers = await prisma.user.create({
-      data: {
-        name,
-        email,
-        profile: {
-          create: {
-            address,
-            birthday: new Date(birthday), // Example birthday date
-          },
-        }
-      },
-      include: {
-        profile: true, // Include the profile data in the returned result
+  const { name, email, birthday, address } = req.body
+  const allUsers = await prisma.user.create({
+    data: {
+      name,
+      email,
+      profile: {
+        create: {
+          address,
+          birthday: new Date(birthday), // Example birthday date
+        },
       }
-    })
-    return res.json(allUsers)
+    },
+    include: {
+      profile: true, // Include the profile data in the returned result
+    }
+  })
+  return res.json(allUsers)
 })
 
 export default router;
