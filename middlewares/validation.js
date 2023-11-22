@@ -1,3 +1,5 @@
+import CustomError from '../configs/custom-error.js'
+
 const validateAndRespond = (res, schema, data) => {
   const { error } = schema.validate(data, { abortEarly: false });
   const errors = {};

@@ -8,5 +8,3 @@ export default class CustomError extends Error {
     this.isJson = isJson;
   }
 }
-
-// module.exports = CustomError;

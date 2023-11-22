@@ -1,20 +1,17 @@
 import express from 'express'
 import 'express-async-errors'
-import { responseFormattingMiddleware } from './middlewares/formatting-success-reponse.js';
-import CustomError from './configs/custom-error.js'
+import { successResponseMiddleware } from './middlewares/success-reponse-handler.js'
+import { paginateRequest } from './middlewares/pagination.js';
 import { logger } from './configs/wintson-logger.js'
-import * as helpers from './helpers/index.js'
 import { routes } from './routes/routes.js';
-import error_handler from './middlewares/error-handler.js';
-
-global.CustomError = CustomError
-global.Helpers = helpers;
+import { errorResponseMiddleware } from './middlewares/error-repsonse-handler.js'
 
 const app = express()
 const port = 3000
 
 app.use(express.json())
-app.use(responseFormattingMiddleware)
+app.use(paginateRequest) // add take & skip to req for querying with pagination
+app.use(successResponseMiddleware)
 
 routes(app)
 
@@ -31,7 +28,7 @@ process.on("unhandledRejection", (ex) => {
 });
 
 // import error handler
-app.use(error_handler)
+app.use(errorResponseMiddleware)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

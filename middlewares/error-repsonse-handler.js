@@ -2,8 +2,9 @@
 * for handling API error responses
 */
 import { logger } from '../configs/wintson-logger.js';
+import CustomError from '../configs/custom-error.js'
 
-export default (err, req, res, next) => {
+export const errorResponseMiddleware = (err, req, res, next) => {
   console.error(err.stack);
   const response = {
     status: 'error',

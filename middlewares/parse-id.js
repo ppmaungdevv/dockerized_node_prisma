@@ -1,3 +1,5 @@
+import CustomError from '../configs/custom-error.js'
+
 const parseIdParam = (req, res, next) => {
   const { id } = req.params;
   const parsedId = Number(id, 10);

@@ -1,24 +1,40 @@
 import express from "express"
-import { parseIdParam } from '../../middlewares/parse-id.js';
-import { validateRequestBody } from '../../middlewares/validation.js';
-import { create_user_schema } from '../../validation-schemas/user-schemas.js';
-import { prisma } from '../../configs/prisma-client.js';
+import CustomError from '../../configs/custom-error.js'
+import { parseIdParam } from '../../middlewares/parse-id.js'
+import { validateRequestBody } from '../../middlewares/validation.js'
+import { create_user_schema } from '../../validation-schemas/user-schemas.js'
+import { prisma } from '../../configs/prisma-client.js'
 
 const router = express.Router();
 
 // get users route
 router.get('/users', async (req, res) => {
-  const all_users = await prisma.user.findMany({
-    include: {
-      posts: {
-        select: {
-          title: true,
-        },
-      },
-      profile: true
+  const { name, take, skip } = req.query
+
+  const where = {
+    name: {
+      contains: name // Use 'contains' to perform a case-insensitive partial match
     },
-  })
-  return res.json(all_users)
+  }
+
+  const [ users, count] = await prisma.$transaction([
+    prisma.user.findMany({
+      where, take, skip,
+      include: {
+        posts: {
+          select: {
+            title: true,
+          },
+        },
+        profile: true
+      },
+    }),
+
+    prisma.user.count({ where })
+
+  ])
+
+  res.formattedResponse({ data: users, total_data_count: count }, 'Users retrieved successfully')
 })
 
 // get user detail
@@ -38,7 +54,7 @@ router.get('/users/:id', parseIdParam, async (req, res) => {
   if (!user) {
     throw new CustomError({ message: "User Not Found", statusCode: 404 })
   }
-  return res.json(user)
+  res.formattedResponse(user, 'Users retrieved successfully')
 })
 
 // get user's post
@@ -92,7 +108,7 @@ router.get('/users/:id/posts', parseIdParam, async (req, res) => {
   *
   *
   */
-  return res.json(user_posts)
+  return res.formattedResponse(user_posts, 'Users retrieved successfully')
 })
 
 // create user route

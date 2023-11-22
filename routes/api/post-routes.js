@@ -1,4 +1,5 @@
 import express from "express"
+import CustomError from '../../configs/custom-error.js'
 import { parseIdParam } from '../../middlewares/parse-id.js';
 import { validateRequestBody } from '../../middlewares/validation.js';
 import { create_post_schema, update_post_category_schema } from '../../validation-schemas/post-schemas.js';
@@ -6,8 +7,7 @@ import { prisma } from '../../configs/prisma-client.js';
 const router = express.Router();
 
 router.get('/posts', async (req, res) => {
-  const { title, page, size } = req.query
-  const { take, skip } = Helpers.getPagination(page, size)
+  const { title, take, skip } = req.query
 
   const where = {
     title: {
@@ -33,8 +33,7 @@ router.get('/posts', async (req, res) => {
     prisma.post.count({ where })
   ])
 
-  const resp = Helpers.responseWithPagination({ data: posts, total_data_count: count, page, size })
-  res.formattedResponse(resp, 'Posts retrieved successfully')
+  res.formattedResponse({ data: posts, total_data_count: count }, 'Posts retrieved successfully')
 })
 
 // for connentOrCreate catgory
