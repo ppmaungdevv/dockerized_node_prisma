@@ -1,24 +1,11 @@
 import express from "express"
+import { parseIdParam } from '../../middlewares/parse-id.js';
 import { validateRequestBody } from '../../middlewares/validation.js';
-import { create_post_schema } from '../../validation-schemas/post-schemas.js';
+import { create_post_schema, update_post_category_schema } from '../../validation-schemas/post-schemas.js';
 import { prisma } from '../../configs/prisma-client.js';
 const router = express.Router();
 
 router.get('/posts', async (req, res) => {
-  try {
-    const all_posts = await prisma.post.findMany({
-      include: {
-        // posts: true,
-      },
-    })
-    return res.json(all_posts)
-  } catch (error) {
-    console.log(error)
-    return res.json(error)
-  }
-})
-
-router.get('/search/posts', async (req, res) => {
   const { title, page, size } = req.query
   const { take, skip } = Helpers.getPagination(page, size)
 
@@ -29,20 +16,39 @@ router.get('/search/posts', async (req, res) => {
   }
 
   const [ posts, count ] = await prisma.$transaction([
-    prisma.post.findMany({ where, take, skip }),
+    prisma.post.findMany({ where, take, skip,
+      include: {
+        categories: {
+          select: {
+            name: true
+          }
+        },
+        User: {
+          select: {
+            name: true
+          }
+        }
+      }
+    }),
     prisma.post.count({ where })
   ])
 
   const resp = Helpers.responseWithPagination({ data: posts, total_data_count: count, page, size })
-  return res.json(resp)
+  res.formattedResponse(resp, 'Posts retrieved successfully')
 })
 
 // for connentOrCreate catgory
-const getFomattedCategories = async (categories) => {
+const getFomattedConnectCategories = async (categories) => {
   return {
     connectOrCreate: categories.map(category => {
       return { where: { name: category }, create: { name: category } }
     })
+  }
+}
+
+const getFomattedDisconnectCategories = async (categories) => {
+  return {
+    disconnect: categories.map(category => ({name: category}))
   }
 }
 
@@ -67,17 +73,85 @@ router.post('/posts', validateRequestBody(create_post_schema), async (req, res) 
   }
   
   if (categories && categories.length > 0) {
-    data['categories'] = await getFomattedCategories(categories)
+    data['categories'] = await getFomattedConnectCategories(categories)
   }
 
-  const newPost = await prisma.post.create({
+  const new_post = await prisma.post.create({
     data,
     include: {
       categories: true,
     }
   });
   
-  return res.json(newPost)
+  res.formattedResponse(new_post, 'Posts added successfully')
 })
+
+
+router.patch('/posts/:id/categories', parseIdParam, validateRequestBody(update_post_category_schema), async(req, res) => {
+
+  const { categories } = req.body, { id } = req.params
+
+  // detach all categories
+  if (categories.length == 0) {
+    await prisma.post.update({
+      where: { id },
+      data: {
+        categories: { set: [] }, // Empty array disconnects all categories
+      },
+    })
+
+    res.formattedResponse(null, 'Posts updated successfully')
+  }
+
+  const post_categories = await prisma.post.findUnique({
+    where: { id },
+    include: { 
+      categories: {
+        select: {
+          name: true
+        }
+      }
+    },
+  });
+
+  if (!post_categories) {
+    throw new CustomError({ message: "Post Not Found", statusCode: 404 })
+  }
+  
+  // ["News", "Sports", "Economics"]
+  const old_categories = post_categories.categories.map(category => category.name)
+  
+  const newly_added_categories = categories.filter(item => !old_categories.includes(item))
+  const removed_categories = old_categories.filter(item => !categories.includes(item))
+  let t = null
+  if (newly_added_categories.length > 0) {
+    t = await attachCategories(id, newly_added_categories)
+  }
+  if (removed_categories.length > 0) {
+    await detachCategories(id, removed_categories)
+  }
+  
+  res.formattedResponse(null, 'Posts updated successfully')
+})
+
+const attachCategories = async (post_id, categories) => {
+  const formatted = await getFomattedConnectCategories(categories)
+  return await prisma.post.update({
+    where: { id: post_id },
+    data: {
+      categories: formatted,
+    },
+  })
+}
+
+const detachCategories = async (post_id, categories) => {
+  const formatted = await getFomattedDisconnectCategories(categories)
+  return await prisma.post.update({
+    where: { id: post_id },
+    data: {
+      categories: formatted,
+    },
+  })
+}
 
 export default router;

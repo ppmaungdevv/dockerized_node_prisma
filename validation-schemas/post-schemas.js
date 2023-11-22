@@ -12,6 +12,20 @@ const create_post_schema = joi_with_unknown.object({
   })
 });
 
+const update_post_category_schema = joi_with_unknown.object({
+  // categories: Joi.object({
+  //   removed: Joi.string().required(),
+  //   new: Joi.string().required(),
+  // }).required().label('Categories')
+  categories: Joi.array()
+    .required()
+    .items(Joi.string().label('categories'))
+    .messages({
+      'string.base': 'Categories must be an array of strings',
+    })
+});
+
 export {
-  create_post_schema
+  create_post_schema,
+  update_post_category_schema
 }

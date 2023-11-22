@@ -1,10 +1,11 @@
 import express from 'express'
 import 'express-async-errors'
+import { responseFormattingMiddleware } from './middlewares/formatting-success-reponse.js';
 import CustomError from './configs/custom-error.js'
 import { logger } from './configs/wintson-logger.js'
 import * as helpers from './helpers/index.js'
 import { routes } from './routes/routes.js';
-import error_handler from './configs/error-handler.js';
+import error_handler from './middlewares/error-handler.js';
 
 global.CustomError = CustomError
 global.Helpers = helpers;
@@ -13,6 +14,7 @@ const app = express()
 const port = 3000
 
 app.use(express.json())
+app.use(responseFormattingMiddleware)
 
 routes(app)
 

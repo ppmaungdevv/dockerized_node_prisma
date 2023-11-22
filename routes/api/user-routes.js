@@ -57,6 +57,13 @@ router.get('/users/:id/posts', parseIdParam, async (req, res) => {
     }
   })
   /* 
+  *   
+  * User: {
+  *   select: {
+  *      name: true
+  *     }
+  *  }
+  * instead of using above select with include
   * use this if you want to get posts with user infos 
   * 
   *
